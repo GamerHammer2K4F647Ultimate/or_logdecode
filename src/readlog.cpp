@@ -6,18 +6,19 @@
 #include <cstdlib>
 #include "readlog.h"
 
-std::string slurp_file(const std::string& file_path) {
+std::string slurp_file(const std::string& file_path, bool log) {
     std::ifstream file(file_path);
     if (!file) {
         std::cerr << "file does not exist or cannot be opened: " << file_path << std::endl;
         std::perror("std::fstream");
         return "";
     }
+    if (log) std::cout << "loaded file: " << file_path << std::endl;
     return std::string((std::istreambuf_iterator<char>(file)),
         std::istreambuf_iterator<char>());
 }
 
-std::string extract_all_occurrences(const std::string& content, const std::string& keyword) {
+std::string extract_all_occurrences(const std::string& content, const std::string& keyword, bool log) {
     std::string result;
     size_t pos = content.find(keyword);
     while (pos != std::string::npos) {
@@ -32,12 +33,13 @@ std::string extract_all_occurrences(const std::string& content, const std::strin
 }
 
 void extract_segments(const std::string& content, std::string& errors,
-    std::string& warnings, std::string& info, std::string& header) {
+    std::string& warnings, std::string& info, std::string& header, bool log) {
+    if (log) std::cout << "extracting header" << std::endl;
     size_t head_end = content.find("Loading  TRK TDB");
     if (head_end != std::string::npos) {
         header = content.substr(0, head_end + std::string("Loading  TRK TDB").length());
     }
-    errors = extract_all_occurrences(content, "Error:");
-    warnings = extract_all_occurrences(content, "Warning:");
-    info = extract_all_occurrences(content, "Information:");
+    errors = extract_all_occurrences(content, "Error:", log);
+    warnings = extract_all_occurrences(content, "Warning:", log);
+    info = extract_all_occurrences(content, "Information:", log);
 }

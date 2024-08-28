@@ -122,14 +122,14 @@ int main(int argc, char* argv[])
         std::cout << strings::help_en << std::endl;
         return 0;
     }
-    else if ((argc == 3) && !strcmp("--logall", argv[2])) {
+    else if ((argc == 3) && !strcmp("-logall", argv[2])) {
         logall = true;
     }
 
     if(logall) std::cout << "current working directory: " << std::filesystem::current_path() << std::endl;
     
     std::string file_path = argv[1];
-    std::string content = slurp_file(file_path);
+    std::string content = slurp_file(file_path, logall);
 
     if (content.empty()) {
         std::cerr << "file is empty" << std::endl;
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
     }
 
     std::string errors, warnings, info, header;
-    extract_segments(content, errors, warnings, info, header);
+    extract_segments(content, errors, warnings, info, header, logall);
     if (logall) std::cout << "logfile segmented" << std::endl;
 
     if (logall) std::cout << "starting cli" << std::endl;
