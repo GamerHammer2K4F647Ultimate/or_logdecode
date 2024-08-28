@@ -31,3 +31,7 @@
 *.exe
 *.out
 *.app
+
+x64
+or_logdecode
+.vs
